@@ -32,8 +32,15 @@ app.post("/cart",(req,res)=>{
         return res.status(404).json({message:"Product not found"})
      }
 
-     //cart mein add kro
-     cart.push(product);
+     // Check if product already in cart
+     const existingItem = cart.find(p => p.id === productId);
+     
+     if(existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + 1;
+     } else {
+        //cart mein add kro with quantity
+        cart.push({...product, quantity: 1});
+     }
 
      res.json({
         message:"Product added to cart",
@@ -49,6 +56,38 @@ app.get("/cart",(req,res)=>{
         cart
     })
 })
+
+
+// Route: PUT /cart/:id
+app.put("/cart/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  // safety check
+  if (!req.body || req.body.quantity === undefined) {
+    return res.status(400).json({
+      message: "Quantity is required"
+    });
+  }
+
+  const { quantity } = req.body;
+
+  const item = cart.find(p => p.id === id);
+
+  if (!item) {
+    return res.status(404).json({ message: "Item not in cart" });
+  }
+
+  if (quantity <= 0) {
+    cart = cart.filter(p => p.id !== id);
+  } else {
+    item.quantity = quantity;
+  }
+
+  res.json({
+    message: "Quantity updated",
+    cart
+  });
+});
 
 
 
