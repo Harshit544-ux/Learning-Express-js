@@ -42,6 +42,13 @@ app.post("/cart",(req,res)=>{
 })
 
 
+// Route: GET /cart
+app.get("/cart",(req,res)=>{
+    res.json({
+        message:"Your Cart",
+        cart
+    })
+})
 
 
 
