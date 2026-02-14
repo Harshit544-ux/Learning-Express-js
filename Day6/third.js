@@ -90,6 +90,19 @@ app.put("/cart/:id", (req, res) => {
 });
 
 
+//Route: DELETE /cart/:id
+app.delete("/cart/:id",(req,res)=>{
+    const id =Number(req.params.id);
+
+    cart = cart.filter(p=>p.id !==id)
+
+    res.json({
+        message:"Item removed from cart",
+        cart
+    })
+})
+
+
 
 
 //Port
