@@ -29,6 +29,13 @@ app.put("/users",async(req,res)=>{
 })
 
 
+//Delete user from DB
+app.delete("/users/:id",async(req,res)=>{
+     const {id}=req.params;
+      const deletedUser=await User.findByIdAndDelete(id);
+      res.send(deletedUser);
+})
+
 
 app.listen(4000, () => {
   console.log("App is listening at port 4000");
