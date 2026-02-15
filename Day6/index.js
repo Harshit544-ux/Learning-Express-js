@@ -1,17 +1,19 @@
-// take the module of express js
-const express=require('express');
-require('./database/config');
+const express = require("express");
+require("./database/config");
+const User = require("./model/userModal");
+ // DB connect ho raha hai
 
+const app = express();
 
-//creating the instance of express js
-const app=express();
-
-//parsing the json to object
 app.use(express.json());
 
+ app.post("/register",async (req,res)=>{
+     await User.create(req.body);
+     res.send("User Regstered Successfully")
+ })
 
 
-// app is listening
-app.listen(4000,()=>{
-    console.log('app is listening at port no. 4000');
-})
+
+app.listen(4000, () => {
+  console.log("App is listening at port 4000");
+});
