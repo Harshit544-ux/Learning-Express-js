@@ -26,18 +26,42 @@ app.post("/register",async (req,res)=>{
     }catch(err){
         res.send("Error in user registetaion :" + err.message);
     }
-
-
      
  })
 
 
-// Get all users from DB
-app.get("/users",async(req,res)=>{
-    const users=await User.find()
-    res.send(users)
-})
+app.post("/login",async(req,res)=>{
+    //take email and password from request body
+    const {email,password }= req.body;
+    console.log(email,password)
+      
+    try{
+        //Find user by email in DB
+        const userEmail =await User.findOne({email});
+        console.log(userEmail);
 
+        //if user not found 
+        if(!userEmail){
+            throw new Error("User not found with this email");
+        }
+
+        //compare the password
+        const isPasswordMatch= bcrypt.compare(password,userEmail.password);
+      
+        //password match nahi hua 
+        if(!isPasswordMatch){
+            throw new Error("Invalid password");
+        }
+
+        res.send("User logged in Successfully")
+     
+
+    }catch(err){
+        res.send("Error in user login :" + err.message);
+    }
+  
+
+})
 
 
 
