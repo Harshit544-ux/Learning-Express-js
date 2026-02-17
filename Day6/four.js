@@ -102,6 +102,25 @@ app.get("/users", async (req, res) => {
 })
 
 
+//TODO : add the proper try catch block and protected routes in last two apis
+
+//Update user data in DB
+app.put("/users",async(req,res)=>{
+     const {id,...update}=req.body;
+      const updatedUser=await User.findByIdAndUpdate(id,update);
+      res.send(updatedUser);
+
+})
+
+//Delete user from DB
+app.delete("/users/:id",async(req,res)=>{
+     const {id}=req.params;
+      const deletedUser=await User.findByIdAndDelete(id);
+      res.send(deletedUser);
+})
+
+
+
 // server is listen
 app.listen(4000, () => {
     console.log("App is listening at port 4000");
