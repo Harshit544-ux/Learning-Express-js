@@ -102,21 +102,56 @@ app.get("/users", async (req, res) => {
 })
 
 
-//TODO : add the proper try catch block and protected routes in last two apis
+//Completed 
 
 //Update user data in DB
 app.put("/users",async(req,res)=>{
-     const {id,...update}=req.body;
-      const updatedUser=await User.findByIdAndUpdate(id,update);
-      res.send(updatedUser);
 
+     const {id,...update}=req.body;
+    try{
+          //1.cookie se token nikalo
+        const token = req.cookies.token
+
+        if (!token) {
+            throw new Error("Token not found")
+        }
+
+        //2.token verify karo
+        const decode_user = jwt.verify(token, "harshit");
+        console.log(decode_user);
+        const updatedUser=await User.findByIdAndUpdate(id,update);
+        res.send(updatedUser);
+
+    } catch (err) {
+        res.send("Error in updating user : " + err.message);
+    }
+     
 })
 
 //Delete user from DB
 app.delete("/users/:id",async(req,res)=>{
      const {id}=req.params;
-      const deletedUser=await User.findByIdAndDelete(id);
-      res.send(deletedUser);
+    try{
+        //1.cookie se token nikalo
+        const token = req.cookies.token
+
+        if (!token) {
+            throw new Error("Token not found")
+        }
+
+        //2.token verify karo
+        const decode_user = jwt.verify(token, "harshit");
+        console.log(decode_user);
+         
+       const deletedUser=await User.findByIdAndDelete(id);
+       res.send(deletedUser);
+
+
+    }catch(err){
+        res.send("Error in deleting user : " + err.message);
+    }
+    
+  
 })
 
 
