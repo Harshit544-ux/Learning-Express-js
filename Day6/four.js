@@ -4,7 +4,9 @@ const User = require("./model/userModal");
 const bcrypt = require("bcrypt");
 const validateUser = require("./utils/validateUser");
 const jwt = require("jsonwebtoken");
-const cookie = require("cookie-parser")
+const cookie = require("cookie-parser");
+const auth = require("./middlewares/auth");
+const { JWT_SECRET, SALT_ROUNDS } = require("./utils/constants");
 
 const app = express();
 
@@ -15,31 +17,26 @@ app.use(cookie());
 // Feed the user data in Db
 app.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
-    console.log(username, email, password)
+    console.log(username, email, password);
 
     try {
         //call the validateUser function to check for mandatory fields
         validateUser(req.body);
 
         //Hashing the password before saving to Db
-        req.body.password = await bcrypt.hash(req.body.password)
+        req.body.password = await bcrypt.hash(req.body.password, SALT_ROUNDS);
         await User.create(req.body);
-        res.send("User Regstered Successfully")
-
+        res.send("User Regstered Successfully");
     } catch (err) {
         res.send("Error in user registetaion :" + err.message);
     }
-
-})
-
+});
 
 app.post("/login", async (req, res) => {
-    //take email and password from request body
     const { email, password } = req.body;
-    console.log(email, password)
+    console.log(email, password);
 
     try {
-
         //Find user by email in DB
         const userEmail = await User.findOne({ email });
         console.log(userEmail);
@@ -60,101 +57,48 @@ app.post("/login", async (req, res) => {
         //generate the token
         const token = jwt.sign(
             { id: userEmail._id, email: userEmail.email },
-            "harshit", { expiresIn: "2 days" }
-        )
-        console.log(token)
+            JWT_SECRET, { expiresIn: "2 days" }
+        );
+        console.log(token);
+
         //send cookie
-        res.cookie("token", token)
-        res.send("User logged in Successfully")
-
-
+        res.cookie("token", token);
+        res.send("User logged in Successfully");
     } catch (err) {
         res.send("Error in user login :" + err.message);
     }
+});
 
-
-})
-
-
-app.get("/users", async (req, res) => {
-
+app.get("/users", auth, async (req, res) => {
     try {
-        //1.cookie se token nikalo
-        const token = req.cookies.token
-
-        if (!token) {
-            throw new Error("Token not found")
-        }
-
-        //2.token verify karo
-        const decode_user = jwt.verify(token, "harshit");
-        console.log(decode_user);
-
         const user = await User.find();
-        //  console.log(req.cookies)
-
         res.send(user);
-
     } catch (err) {
         res.send("Error in getting info : " + err.message);
     }
-
-})
-
-
-//Completed 
+});
 
 //Update user data in DB
-app.put("/users",async(req,res)=>{
-
-     const {id,...update}=req.body;
-    try{
-          //1.cookie se token nikalo
-        const token = req.cookies.token
-
-        if (!token) {
-            throw new Error("Token not found")
-        }
-
-        //2.token verify karo
-        const decode_user = jwt.verify(token, "harshit");
-        console.log(decode_user);
-        const updatedUser=await User.findByIdAndUpdate(id,update);
+app.put("/users", auth, async (req, res) => {
+    const { id, ...update } = req.body;
+    try {
+        const updatedUser = await User.findByIdAndUpdate(id, update);
         res.send(updatedUser);
-
     } catch (err) {
         res.send("Error in updating user : " + err.message);
     }
-     
-})
+});
 
 //Delete user from DB
-app.delete("/users/:id",async(req,res)=>{
-     const {id}=req.params;
-    try{
-        //1.cookie se token nikalo
-        const token = req.cookies.token
-
-        if (!token) {
-            throw new Error("Token not found")
-        }
-
-        //2.token verify karo
-        const decode_user = jwt.verify(token, "harshit");
-        console.log(decode_user);
-         
-       const deletedUser=await User.findByIdAndDelete(id);
-       res.send(deletedUser);
-
-
-    }catch(err){
+app.delete("/users/:id", auth, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedUser = await User.findByIdAndDelete(id);
+        res.send(deletedUser);
+    } catch (err) {
         res.send("Error in deleting user : " + err.message);
     }
-    
-  
-})
-
-
+});
 
 // server is listen
 app.listen(4000, () => {
