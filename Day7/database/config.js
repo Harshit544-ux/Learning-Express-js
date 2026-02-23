@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const url = "mongodb+srv://harshit:dbuser@coderarmy.rgzfk1v.mongodb.net/Instagram";
+const url = process.env.MANGODB_URL ;
 
 mongoose
   .connect(url)

@@ -1,13 +1,13 @@
+require("dotenv").config();  
+console.log(process.env.MANGODB_URL);
 const express = require("express");
-require("./database/config");
-const User = require("./model/userModal");
-const bcrypt = require("bcrypt");
-const validateUser = require("./utils/validateUser");
-const jwt = require("jsonwebtoken");
 const cookie = require("cookie-parser");
 const auth = require("./middlewares/auth");
-const { JWT_SECRET, SALT_ROUNDS } = require("./utils/constants");
+
 const userRouter = require("./routes/user");
+
+// DB connect import
+require("./database/config");
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(cookie());
 
 //routes
 
-app.use("/auth",userRouter)
+app.use("/auth",userRouter);
 
 
 
