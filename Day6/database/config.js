@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const url = "mongodb+srv://harshit:dbuser@coderarmy.rgzfk1v.mongodb.net/Instagram";
+// comment for security purpose
+// const url = "mongodb+srv://harshit:dbuser@coderarmy.rgzfk1v.mongodb.net/Instagram";
 
 mongoose
   .connect(url)
