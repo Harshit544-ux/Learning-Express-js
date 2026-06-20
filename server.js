@@ -1,13 +1,23 @@
-const express = require("express")
+//import the app instance from app.js
+const app = require("./src/app")
 
-const app = express()
+//Task : Notes Api
 
-app.get("/",(req,res)=>{
-    res.send("Hello World !")
+notes = [] //create the notes array
+
+// title , description 
+// POST  /notes
+app.post("/notes",(req,res)=>{
+    console.log(req.body)
+    notes.push(req.body)
+
+    res.status(201).send({
+        message : "notes created "
+    })
 })
 
-app.get("/about",(req,res)=>{
-    res.send("This is about page")
-})
 
-app.listen(3000)
+//start the server
+app.listen(3000,()=>{
+    console.log("server is running on port 3000")
+})
