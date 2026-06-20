@@ -17,6 +17,15 @@ app.post("/notes",(req,res)=>{
 })
 
 
+//GET /notes
+app.get("/notes",(req,res)=>{
+    res.status(200).send({
+        message:"notes fetch successfully",
+        notes:notes
+    })
+})
+
+
 //start the server
 app.listen(3000,()=>{
     console.log("server is running on port 3000")
