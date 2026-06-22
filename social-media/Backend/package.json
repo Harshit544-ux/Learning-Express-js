@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "social-media",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "create": "^0.5.5",
+    "@imagekit/nodejs": "^7.8.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "vite": "^8.0.16"
+    "mongoose": "^9.7.1",
+    "multer": "^2.2.0"
   }
 }
